@@ -9,7 +9,7 @@ api = Blueprint('api', __name__)
 
 @api.route('/')
 def buk():
-    return "I am BUK, test the routes <kbd>/books</kbd>"
+    return "I am BUK, test the routes <kbd>/books</kbd>, <kbd>/books/id</kbd>"
 
 @api.route('/books', methods=['GET'])
 def get_books():
@@ -52,32 +52,19 @@ def add_book():
     except ValidationError as err:
         return jsonify({"error": "Validation failed", "messages": err.messages}), 400
 
-    new_book = Book(
-        title=data['title'],
-        author=data['author'],
-        genre=data['genre'],
-        publication_date=datetime.strptime(data['publication_date'], '%Y-%m-%d').date(),
-        price=data['price']
-    )
-
-    db.session.add(new_book)
+    db.session.add(data)
     db.session.commit()
-
-    return jsonify({"message": "Book added successfully", "book": book_schema.dump(new_book)}), 201
+    
+    return book_schema.jsonify(data), 201
 
 @api.route('/books/<int:id>', methods=['PUT'])
 def update_book(id):
     book = Book.query.get_or_404(id, description="Book not found")
 
     try:
-        data = book_schema.load(request.json, partial=True)
+        book_schema.load(request.json, instance=book, partial=True)
     except ValidationError as err:
         return jsonify({"error": "Validation failed", "messages": err.messages}), 400
-
-    for key, value in data.items():
-        if key == 'publication_date':
-            value = datetime.strptime(value, '%Y-%m-%d').date()
-        setattr(book, key, value)
 
     db.session.commit()
 
