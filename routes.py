@@ -95,4 +95,3 @@ def not_found(error):
 @api.errorhandler(400)
 def bad_request(error):
     return jsonify({"error": str(error)}), 400
-
