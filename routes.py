@@ -1,4 +1,3 @@
-
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 from models import Book
@@ -7,6 +6,10 @@ from database import db
 from datetime import datetime
 
 api = Blueprint('api', __name__)
+
+@api.route('/')
+def buk():
+    return "I am BUK, test the routes <kbd>/books</kbd>"
 
 @api.route('/books', methods=['GET'])
 def get_books():
