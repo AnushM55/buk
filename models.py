@@ -8,3 +8,9 @@ class Book(db.Model):
     genre = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Float, nullable=False)
 
+    def __init__(self, title, author, genre, publication_date, price):
+        self.title = title
+        self.author = author
+        self.genre = genre
+        self.publication_date = publication_date
+        self.price = price
